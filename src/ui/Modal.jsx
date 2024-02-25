@@ -1,3 +1,4 @@
+import { cloneElement, createContext, useContext, useState } from 'react';
 import styled from 'styled-components';
 import { HiXMark } from 'react-icons/hi2';
 
@@ -50,16 +51,51 @@ const Button = styled.button`
 	}
 `;
 
-function Modal({ children, onClose }) {
+const ModalContext = createContext();
+
+function Modal({ children }) {
+	// openWindow contains the name of the currently open window
+	const [openWindow, setOpenWindow] = useState('');
+
+	const open = setOpenWindow;
+	const close = () => setOpenWindow('');
+
+	return (
+		<ModalContext.Provider value={{ openWindow, open, close }}>
+			{children}
+		</ModalContext.Provider>
+	);
+}
+
+function Open({ children, opens: windowName }) {
+	const { open } = useContext(ModalContext);
+
+	// Modal.Open will have children (Button) and you want to add
+	// onClick event to these children,
+	// hence clone the children and add add the event
+	// (cloneElement is not recommended to use though)
+	return cloneElement(children, { onClick: () => open(windowName) });
+}
+
+function Window({ children, name }) {
+	const { openWindow, close } = useContext(ModalContext);
+
+	if (name !== openWindow) return null;
+
 	return (
 		<Overlay>
 			<StyledModal>
-				<Button onClick={onClose}>
+				<Button onClick={close}>
 					<HiXMark />
 				</Button>
-				<div>{children}</div>
+
+				<div>{cloneElement(children, { onCloseModal: close })}</div>
 			</StyledModal>
 		</Overlay>
 	);
 }
+
+Modal.Open = Open;
+Modal.Window = Window;
+
 export default Modal;

@@ -1,29 +1,32 @@
-import { useState } from 'react';
 import Button from '../../ui/Button';
-import CreateTourForm from './CreateTourForm';
 import Modal from '../../ui/Modal';
+import CreateTourForm from './CreateTourForm';
+import TourTable from './TourTable';
 
 function CreateTour() {
-	// CreateTour component will just add a button to open the modal
-	// this is subpar, as this component then needs to worry about state management
-	// if we want to reuse the modal open / close technique somewhere else,
-	// then that component again needs to have this state and logic to open the modal
+	// we use Compound components for the modal the modal itself
+	// should contain the state and logic to open/close the modal
 
-	const [isOpenModal, setIsOpenModal] = useState(false);
-
-	function closeModal() {
-		setIsOpenModal(false);
-	}
-
+	// Modal.Open is the button to open the modal
+	// and Modal.Window is the modal window itself
+	// here we have multiple buttons which open different windows
+	// hence pass the opens prop
 	return (
-		<div>
-			<Button onClick={() => setIsOpenModal(s => !s)}>New tour</Button>
-			{isOpenModal && (
-				<Modal onClose={closeModal}>
-					<CreateTourForm onCloseModal={closeModal} />
-				</Modal>
-			)}
-		</div>
+		<Modal>
+			<Modal.Open opens="create-tour-form">
+				<Button>Create new tour</Button>
+			</Modal.Open>
+			<Modal.Window name="create-tour-form">
+				<CreateTourForm />
+			</Modal.Window>
+
+			<Modal.Open opens="tours-table">
+				<Button>Show tours</Button>
+			</Modal.Open>
+			<Modal.Window name="tours-table">
+				<TourTable />
+			</Modal.Window>
+		</Modal>
 	);
 }
 export default CreateTour;
