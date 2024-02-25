@@ -8,7 +8,7 @@ import Textarea from '../../ui/Textarea';
 import { useEditTour } from './useEditTour';
 import FormRow from '../../ui/FormRow';
 
-function EditTourForm({ tour }) {
+function EditTourForm({ tour, onCloseModal }) {
 	const { register, handleSubmit, getValues, formState } = useForm({
 		defaultValues: tour,
 	});
@@ -18,11 +18,17 @@ function EditTourForm({ tour }) {
 
 	function onFormSubmit(data) {
 		const image = typeof data.image === 'string' ? data.image : data.image[0];
-		editTour({ tourId: tour.id, tour: { ...data, image } });
+		editTour(
+			{ tourId: tour.id, tour: { ...data, image } },
+			{ onSuccess: () => onCloseModal?.() }
+		);
 	}
 
 	return (
-		<Form onSubmit={handleSubmit(onFormSubmit)}>
+		<Form
+			onSubmit={handleSubmit(onFormSubmit)}
+			type={onCloseModal ? 'modal' : 'regular'}
+		>
 			<FormRow label="Tour name" error={formErrors?.name?.message}>
 				<Input
 					type="text"
@@ -100,7 +106,7 @@ function EditTourForm({ tour }) {
 			</FormRow>
 
 			<FormRow>
-				<Button variation="secondary" type="reset">
+				<Button variation="secondary" onClick={onCloseModal}>
 					Cancel
 				</Button>
 				<Button disabled={isEditing}>Save tour</Button>

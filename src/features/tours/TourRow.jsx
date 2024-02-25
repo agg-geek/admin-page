@@ -1,8 +1,10 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 import { formatCurrency } from '../../utils/helpers';
 import EditTourForm from './EditTourForm';
 import { useDeleteTour } from './useDeleteTour';
+import Modal from '../../ui/Modal';
+import { HiPencil, HiTrash } from 'react-icons/hi2';
+import ConfirmDelete from '../../ui/ConfirmDelete';
 
 const TableRow = styled.div`
 	display: grid;
@@ -44,30 +46,42 @@ const Discount = styled.div`
 `;
 
 function TourRow({ tour }) {
-	const [showEditForm, setShowEditForm] = useState(false);
 	const { isDeleting, deleteTour } = useDeleteTour();
 
 	const { id: tourId, name, image, maxGroupSize, price, discount } = tour;
 
 	return (
-		<>
-			<TableRow role="row">
-				<Img src={image} alt={`${name} tour`} />
-				<Tour>{name}</Tour>
-				<div>Max {maxGroupSize} people on a tour</div>
-				<Price>{formatCurrency(price)} </Price>
-				{discount ? (
-					<Discount>{formatCurrency(discount)} </Discount>
-				) : (
-					<span>-</span>
-				)}
-				<button onClick={() => setShowEditForm(s => !s)}>Edit</button>
-				<button onClick={() => deleteTour(tourId)} disabled={isDeleting}>
-					Delete
-				</button>
-			</TableRow>
-			{showEditForm && <EditTourForm tour={tour} />}
-		</>
+		<TableRow role="row">
+			<Img src={image} alt={`${name} tour`} />
+			<Tour>{name}</Tour>
+			<div>Max {maxGroupSize} people on a tour</div>
+			<Price>{formatCurrency(price)} </Price>
+			{discount ? <Discount>{formatCurrency(discount)} </Discount> : <span>-</span>}
+
+			<Modal>
+				<Modal.Open opens="edit-tour">
+					<button>
+						<HiPencil />
+					</button>
+				</Modal.Open>
+				<Modal.Window name="edit-tour">
+					<EditTourForm tour={tour} />
+				</Modal.Window>
+
+				<Modal.Open opens="delete-tour">
+					<button>
+						<HiTrash />
+					</button>
+				</Modal.Open>
+				<Modal.Window name="delete-tour">
+					<ConfirmDelete
+						resourceName={tour.name}
+						disabled={isDeleting}
+						onConfirm={() => deleteTour(tourId)}
+					/>
+				</Modal.Window>
+			</Modal>
+		</TableRow>
 	);
 }
 export default TourRow;
