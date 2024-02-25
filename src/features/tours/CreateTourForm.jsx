@@ -1,3 +1,4 @@
+import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
 import Input from '../../ui/Input';
@@ -43,31 +44,50 @@ const Error = styled.span`
 `;
 
 function CreateTourForm() {
+	// notice there are no controlled elements
+	// the form is handled using react-hook-form
+	const { register, handleSubmit } = useForm();
+
+	function onFormSubmit(data) {
+		// data will be the form data with which the form is submitted
+		console.log(data);
+	}
+
 	return (
-		<Form>
+		<Form onSubmit={handleSubmit(onFormSubmit)}>
 			<FormRow>
 				<Label htmlFor="name">Tour name</Label>
-				<Input type="text" id="name" />
+				<Input type="text" id="name" {...register('name')} />
 			</FormRow>
 
 			<FormRow>
-				<Label htmlFor="maxGroupSize">Maximum capacity</Label>
-				<Input type="number" id="maxGroupSize" />
+				<Label htmlFor="maxGroupSize">Max Group size</Label>
+				<Input type="number" id="maxGroupSize" {...register('maxGroupSize')} />
 			</FormRow>
 
 			<FormRow>
 				<Label htmlFor="price">Regular price</Label>
-				<Input type="number" id="price" />
+				<Input type="number" id="price" {...register('price')} />
 			</FormRow>
 
 			<FormRow>
 				<Label htmlFor="discount">Discount</Label>
-				<Input type="number" id="discount" defaultValue={0} />
+				<Input
+					type="number"
+					id="discount"
+					defaultValue={0}
+					{...register('discount')}
+				/>
 			</FormRow>
 
 			<FormRow>
 				<Label htmlFor="description">Description for website</Label>
-				<Textarea type="number" id="description" defaultValue="" />
+				<Textarea
+					type="number"
+					id="description"
+					defaultValue=""
+					{...register('description')}
+				/>
 			</FormRow>
 
 			<FormRow>
@@ -76,11 +96,11 @@ function CreateTourForm() {
 			</FormRow>
 
 			<FormRow>
-				{/* type is an HTML attribute! */}
+				{/* form is reset using type attribute (which is an HTML attribute) */}
 				<Button variation="secondary" type="reset">
 					Cancel
 				</Button>
-				<Button>Edit tour</Button>
+				<Button>Create tour</Button>
 			</FormRow>
 		</Form>
 	);
