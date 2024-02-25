@@ -6,6 +6,9 @@ import Form from '../../ui/Form';
 import Button from '../../ui/Button';
 import FileInput from '../../ui/FileInput';
 import Textarea from '../../ui/Textarea';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createTour } from '../../services/apiTours';
+import toast from 'react-hot-toast';
 
 const FormRow = styled.div`
 	display: grid;
@@ -46,11 +49,33 @@ const Error = styled.span`
 function CreateTourForm() {
 	// notice there are no controlled elements
 	// the form is handled using react-hook-form
-	const { register, handleSubmit } = useForm();
+	const { register, handleSubmit, reset } = useForm();
+
+	const queryClient = useQueryClient();
+
+	const { mutate, isLoading: isCreating } = useMutation({
+		// mutationFn: (tour) => createTour(tour),
+		mutationFn: createTour,
+		onSuccess: () => {
+			toast.success('Cabin created successfully');
+			queryClient.invalidateQueries({
+				queryKey: ['tours'],
+			});
+
+			// reset the form after tour was created
+			// we should also close the form here, to be done later
+			reset();
+		},
+		onError: err => {
+			console.log(err);
+			toast.error(err.message);
+		},
+	});
 
 	function onFormSubmit(data) {
 		// data will be the form data with which the form is submitted
-		console.log(data);
+		// console.log(data);
+		mutate(data);
 	}
 
 	return (
@@ -96,11 +121,10 @@ function CreateTourForm() {
 			</FormRow>
 
 			<FormRow>
-				{/* form is reset using type attribute (which is an HTML attribute) */}
 				<Button variation="secondary" type="reset">
 					Cancel
 				</Button>
-				<Button>Create tour</Button>
+				<Button disabled={isCreating}>Create tour</Button>
 			</FormRow>
 		</Form>
 	);
