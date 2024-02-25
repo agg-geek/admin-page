@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatCurrency } from '../../utils/helpers';
 import { deleteTour } from '../../services/apiTours';
+import toast from 'react-hot-toast';
 
 const TableRow = styled.div`
 	display: grid;
@@ -52,7 +53,7 @@ function TourRow({ tour }) {
 		// after the mutation has been performed, the tour will be deleted
 		// but the frontend won't update, hence you need to invalidate the tours cache
 		onSuccess: () => {
-			alert('Cabin was deleted successfully');
+			toast.success('Cabin was deleted successfully');
 			// the invalidateQueries is present on the queryClient from which we use react query
 			queryClient.invalidateQueries({
 				queryKey: ['tours'],
@@ -60,7 +61,7 @@ function TourRow({ tour }) {
 		},
 		onError: err => {
 			console.log(err);
-			alert('Cabin could not be deleted');
+			toast.error(err.message);
 		},
 	});
 
