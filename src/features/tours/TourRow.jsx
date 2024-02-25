@@ -1,4 +1,7 @@
 import styled from 'styled-components';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { formatCurrency } from '../../utils/helpers';
+import { deleteTour } from '../../services/apiTours';
 
 const TableRow = styled.div`
 	display: grid;
@@ -38,3 +41,40 @@ const Discount = styled.div`
 	font-weight: 500;
 	color: var(--color-green-700);
 `;
+
+function TourRow({ tour }) {
+	const { id: tourId, name, image, maxGroupSize, price, discount } = tour;
+
+	const queryClient = useQueryClient();
+
+	const { isLoading: isDeleting, mutate } = useMutation({
+		mutationFn: id => deleteTour(id),
+		// after the mutation has been performed, the tour will be deleted
+		// but the frontend won't update, hence you need to invalidate the tours cache
+		onSuccess: () => {
+			alert('Cabin was deleted successfully');
+			// the invalidateQueries is present on the queryClient from which we use react query
+			queryClient.invalidateQueries({
+				queryKey: ['tours'],
+			});
+		},
+		onError: err => {
+			console.log(err);
+			alert('Cabin could not be deleted');
+		},
+	});
+
+	return (
+		<TableRow role="row">
+			<Img src={image} alt={`${name} tour`} />
+			<Tour>{name}</Tour>
+			<div>Max {maxGroupSize} people on a tour</div>
+			<Price>{formatCurrency(price)} </Price>
+			<Price>{formatCurrency(discount)} </Price>
+			<button onClick={() => mutate(tourId)} disabled={isDeleting}>
+				Delete
+			</button>
+		</TableRow>
+	);
+}
+export default TourRow;
