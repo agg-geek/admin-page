@@ -1,5 +1,4 @@
 import { useForm } from 'react-hook-form';
-import styled from 'styled-components';
 
 import Input from '../../ui/Input';
 import Form from '../../ui/Form';
@@ -7,42 +6,7 @@ import Button from '../../ui/Button';
 import FileInput from '../../ui/FileInput';
 import Textarea from '../../ui/Textarea';
 import { useEditTour } from './useEditTour';
-
-const FormRow = styled.div`
-	display: grid;
-	align-items: center;
-	grid-template-columns: 24rem 1fr 1.2fr;
-	gap: 2.4rem;
-
-	padding: 1.2rem 0;
-
-	&:first-child {
-		padding-top: 0;
-	}
-
-	&:last-child {
-		padding-bottom: 0;
-	}
-
-	&:not(:last-child) {
-		border-bottom: 1px solid var(--color-grey-100);
-	}
-
-	&:has(button) {
-		display: flex;
-		justify-content: flex-end;
-		gap: 1.2rem;
-	}
-`;
-
-const Label = styled.label`
-	font-weight: 500;
-`;
-
-const Error = styled.span`
-	font-size: 1.4rem;
-	color: var(--color-red-700);
-`;
+import FormRow from '../../ui/FormRow';
 
 function EditTourForm({ tour }) {
 	const { register, handleSubmit, getValues, formState } = useForm({
@@ -59,8 +23,7 @@ function EditTourForm({ tour }) {
 
 	return (
 		<Form onSubmit={handleSubmit(onFormSubmit)}>
-			<FormRow>
-				<Label htmlFor="name">Tour name</Label>
+			<FormRow label="Tour name" error={formErrors?.name?.message}>
 				<Input
 					type="text"
 					id="name"
@@ -68,11 +31,9 @@ function EditTourForm({ tour }) {
 						required: 'Name is required',
 					})}
 				/>
-				{formErrors?.name?.message && <Error>{formErrors?.name?.message}</Error>}
 			</FormRow>
 
-			<FormRow>
-				<Label htmlFor="maxGroupSize">Max Group size</Label>
+			<FormRow label="Max Group size" error={formErrors?.maxGroupSize?.message}>
 				<Input
 					type="number"
 					id="maxGroupSize"
@@ -84,13 +45,9 @@ function EditTourForm({ tour }) {
 						},
 					})}
 				/>
-				{formErrors?.maxGroupSize?.message && (
-					<Error>{formErrors?.maxGroupSize?.message}</Error>
-				)}
 			</FormRow>
 
-			<FormRow>
-				<Label htmlFor="price">Regular price</Label>
+			<FormRow label="Regular price" error={formErrors?.price?.message}>
 				<Input
 					type="number"
 					id="price"
@@ -102,13 +59,9 @@ function EditTourForm({ tour }) {
 						},
 					})}
 				/>
-				{formErrors?.price?.message && (
-					<Error>{formErrors?.price?.message}</Error>
-				)}
 			</FormRow>
 
-			<FormRow>
-				<Label htmlFor="discount">Discount</Label>
+			<FormRow label="Discount" error={formErrors?.discount?.message}>
 				<Input
 					type="number"
 					id="discount"
@@ -124,13 +77,9 @@ function EditTourForm({ tour }) {
 							'Discount should be less than regular price',
 					})}
 				/>
-				{formErrors?.discount?.message && (
-					<Error>{formErrors?.discount?.message}</Error>
-				)}
 			</FormRow>
 
-			<FormRow>
-				<Label htmlFor="description">Tour description</Label>
+			<FormRow label="Tour description" error={formErrors?.description?.message}>
 				<Textarea
 					type="number"
 					id="description"
@@ -139,13 +88,9 @@ function EditTourForm({ tour }) {
 						required: 'Description is required',
 					})}
 				/>
-				{formErrors?.description?.message && (
-					<Error>{formErrors?.description?.message}</Error>
-				)}
 			</FormRow>
 
-			<FormRow>
-				<Label htmlFor="image">Tour photo</Label>
+			<FormRow label="Tour photo">
 				<FileInput
 					id="image"
 					accept="image/*"
