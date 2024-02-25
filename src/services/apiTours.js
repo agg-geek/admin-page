@@ -39,6 +39,43 @@ export async function createTour(newTour) {
 	return createdTour;
 }
 
+export async function editTour(tourId, tour) {
+	const containsImage = typeof tour.image !== 'string';
+
+	const imageName = containsImage
+		? `${Date.now()}-${tour.image.name}`.replaceAll('/', '')
+		: null;
+
+	const imagePath = containsImage
+		? `https://wmgtcgsvahqwnwxndxwr.supabase.co/storage/v1/object/public/tour-images/${imageName}`
+		: tour.image;
+
+	const { data: updatedTour, error: tourError } = await supabase
+		.from('tours')
+		.update({ ...tour, image: imagePath })
+		.eq('id', tourId)
+		.select();
+
+	if (tourError) {
+		console.log(tourError);
+		throw new Error('Tour could not be edited');
+	}
+
+	if (containsImage) {
+		const { error: imageError } = await supabase.storage
+			.from('tour-images')
+			.upload(imageName, tour.image);
+
+		if (imageError) {
+			console.log(imageError);
+			await supabase.from('tours').delete().eq('id', tour.id);
+			throw new Error('Tour image could not be uploaded, deleting tour...');
+		}
+	}
+
+	return updatedTour;
+}
+
 export async function deleteTour(tourId) {
 	const { error } = await supabase.from('tours').delete().eq('id', tourId);
 

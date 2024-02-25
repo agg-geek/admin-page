@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 import { formatCurrency } from '../../utils/helpers';
 import { deleteTour } from '../../services/apiTours';
-import toast from 'react-hot-toast';
+import EditTourForm from './EditTourForm';
 
 const TableRow = styled.div`
 	display: grid;
@@ -44,6 +46,8 @@ const Discount = styled.div`
 `;
 
 function TourRow({ tour }) {
+	const [showEditForm, setShowEditForm] = useState(false);
+
 	const { id: tourId, name, image, maxGroupSize, price, discount } = tour;
 
 	const queryClient = useQueryClient();
@@ -66,16 +70,20 @@ function TourRow({ tour }) {
 	});
 
 	return (
-		<TableRow role="row">
-			<Img src={image} alt={`${name} tour`} />
-			<Tour>{name}</Tour>
-			<div>Max {maxGroupSize} people on a tour</div>
-			<Price>{formatCurrency(price)} </Price>
-			<Price>{formatCurrency(discount)} </Price>
-			<button onClick={() => mutate(tourId)} disabled={isDeleting}>
-				Delete
-			</button>
-		</TableRow>
+		<>
+			<TableRow role="row">
+				<Img src={image} alt={`${name} tour`} />
+				<Tour>{name}</Tour>
+				<div>Max {maxGroupSize} people on a tour</div>
+				<Price>{formatCurrency(price)} </Price>
+				<Price>{formatCurrency(discount)} </Price>
+				<button onClick={() => setShowEditForm(s => !s)}>Edit</button>
+				<button onClick={() => mutate(tourId)} disabled={isDeleting}>
+					Delete
+				</button>
+			</TableRow>
+			{showEditForm && <EditTourForm tour={tour} />}
+		</>
 	);
 }
 export default TourRow;
