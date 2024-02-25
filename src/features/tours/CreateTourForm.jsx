@@ -48,11 +48,6 @@ const Error = styled.span`
 
 function CreateTourForm() {
 	const { register, handleSubmit, reset, getValues, formState } = useForm();
-
-	// formState will refer to the current state of the form
-	// we use validation and required properties below for form validation
-	// any errors generated there will be present in this errors object
-	// hence, use this errors obj to display errors
 	const { errors: formErrors } = formState;
 
 	const queryClient = useQueryClient();
@@ -74,7 +69,7 @@ function CreateTourForm() {
 	});
 
 	function onFormSubmit(data) {
-		mutate(data);
+		mutate({ ...data, image: data.image[0] });
 	}
 
 	return (
@@ -88,7 +83,6 @@ function CreateTourForm() {
 						required: 'Name is required',
 					})}
 				/>
-				{/* notice using formErrors.name because show error here for name field */}
 				{formErrors?.name?.message && <Error>{formErrors?.name?.message}</Error>}
 			</FormRow>
 
@@ -137,12 +131,9 @@ function CreateTourForm() {
 					{...register('discount', {
 						required: 'Discount is required',
 						min: {
-							value: 1,
+							value: 0,
 							message: 'Discount should be >= 0',
 						},
-						// custom validation
-						// the string after || is used to specify the message if validation fails
-						// to get the current regular price value, use getValues from useForm
 						validate: disc =>
 							+disc < +getValues().price ||
 							'Discount should be less than regular price',
@@ -170,7 +161,14 @@ function CreateTourForm() {
 
 			<FormRow>
 				<Label htmlFor="image">Tour photo</Label>
-				<FileInput id="image" accept="image/*" />
+				<FileInput
+					id="image"
+					accept="image/*"
+					type="file"
+					{...register('image', {
+						required: 'Tour image is required',
+					})}
+				/>
 			</FormRow>
 
 			<FormRow>

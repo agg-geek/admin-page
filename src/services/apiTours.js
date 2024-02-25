@@ -12,14 +12,31 @@ export async function getTours() {
 }
 
 export async function createTour(newTour) {
-	const { data, error } = await supabase.from('tours').insert([newTour]).select();
+	// replace all / with '' because supabase will use / to create new folders
+	const imageName = `${Date.now()}-${newTour.image.name}`.replaceAll('/', '');
+	const imagePath = `https://wmgtcgsvahqwnwxndxwr.supabase.co/storage/v1/object/public/tour-images/${imageName}`;
 
-	if (error) {
-		console.log(error);
+	const { data: createdTour, error: tourError } = await supabase
+		.from('tours')
+		.insert([{ ...newTour, image: imagePath }])
+		.select();
+
+	if (tourError) {
+		console.log(tourError);
 		throw new Error('Tour could not be created');
 	}
 
-	return data;
+	const { error: imageError } = await supabase.storage
+		.from('tour-images')
+		.upload(imageName, newTour.image);
+
+	if (imageError) {
+		console.log(imageError);
+		await supabase.from('tours').delete().eq('id', createdTour.id);
+		throw new Error('Tour image could not be uploaded, deleting tour...');
+	}
+
+	return createdTour;
 }
 
 export async function deleteTour(tourId) {
