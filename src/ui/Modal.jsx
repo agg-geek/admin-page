@@ -1,6 +1,7 @@
 import { cloneElement, createContext, useContext, useState } from 'react';
 import styled from 'styled-components';
 import { HiXMark } from 'react-icons/hi2';
+import { useOutsideClick } from '../hooks/useOutsideClick';
 
 const StyledModal = styled.div`
 	position: fixed;
@@ -54,7 +55,6 @@ const Button = styled.button`
 const ModalContext = createContext();
 
 function Modal({ children }) {
-	// openWindow contains the name of the currently open window
 	const [openWindow, setOpenWindow] = useState('');
 
 	const open = setOpenWindow;
@@ -69,22 +69,18 @@ function Modal({ children }) {
 
 function Open({ children, opens: windowName }) {
 	const { open } = useContext(ModalContext);
-
-	// Modal.Open will have children (Button) and you want to add
-	// onClick event to these children,
-	// hence clone the children and add add the event
-	// (cloneElement is not recommended to use though)
 	return cloneElement(children, { onClick: () => open(windowName) });
 }
 
 function Window({ children, name }) {
 	const { openWindow, close } = useContext(ModalContext);
+	const windowRef = useOutsideClick(close);
 
 	if (name !== openWindow) return null;
 
 	return (
 		<Overlay>
-			<StyledModal>
+			<StyledModal ref={windowRef}>
 				<Button onClick={close}>
 					<HiXMark />
 				</Button>
