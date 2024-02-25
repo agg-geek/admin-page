@@ -1,14 +1,12 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import toast from 'react-hot-toast';
 
-import { editTour } from '../../services/apiTours';
 import Input from '../../ui/Input';
 import Form from '../../ui/Form';
 import Button from '../../ui/Button';
 import FileInput from '../../ui/FileInput';
 import Textarea from '../../ui/Textarea';
+import { useEditTour } from './useEditTour';
 
 const FormRow = styled.div`
 	display: grid;
@@ -47,38 +45,16 @@ const Error = styled.span`
 `;
 
 function EditTourForm({ tour }) {
-	// Copied from CreateTourForm
-	// updating the image is optional while editing
-	// if a new image is chosen, image will be updated
-	// otherwise image remains the same
-
-	// we prefilling the form using defaultValues:
-	const { register, handleSubmit, reset, getValues, formState } = useForm({
+	const { register, handleSubmit, getValues, formState } = useForm({
 		defaultValues: tour,
 	});
 	const { errors: formErrors } = formState;
 
-	const queryClient = useQueryClient();
-
-	const { mutate, isLoading: isEditing } = useMutation({
-		mutationFn: ({ tourId, tour }) => editTour(tourId, tour),
-		onSuccess: () => {
-			toast.success('Cabin edited successfully');
-			queryClient.invalidateQueries({
-				queryKey: ['tours'],
-			});
-
-			reset();
-		},
-		onError: err => {
-			console.log(err);
-			toast.error(err.message);
-		},
-	});
+	const { isEditing, editTour } = useEditTour();
 
 	function onFormSubmit(data) {
 		const image = typeof data.image === 'string' ? data.image : data.image[0];
-		mutate({ tourId: tour.id, tour: { ...data, image } });
+		editTour({ tourId: tour.id, tour: { ...data, image } });
 	}
 
 	return (

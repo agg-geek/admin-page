@@ -6,9 +6,7 @@ import Form from '../../ui/Form';
 import Button from '../../ui/Button';
 import FileInput from '../../ui/FileInput';
 import Textarea from '../../ui/Textarea';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createTour } from '../../services/apiTours';
-import toast from 'react-hot-toast';
+import { useCreateTour } from './useCreateTour';
 
 const FormRow = styled.div`
 	display: grid;
@@ -50,26 +48,24 @@ function CreateTourForm() {
 	const { register, handleSubmit, reset, getValues, formState } = useForm();
 	const { errors: formErrors } = formState;
 
-	const queryClient = useQueryClient();
-
-	const { mutate, isLoading: isCreating } = useMutation({
-		mutationFn: createTour,
-		onSuccess: () => {
-			toast.success('Cabin created successfully');
-			queryClient.invalidateQueries({
-				queryKey: ['tours'],
-			});
-
-			reset();
-		},
-		onError: err => {
-			console.log(err);
-			toast.error(err.message);
-		},
-	});
+	const { isCreating, createTour } = useCreateTour();
 
 	function onFormSubmit(data) {
-		mutate({ ...data, image: data.image[0] });
+		// createTour is the mutate fn which is returned from our custom hook
+		// to use the reset() functionality to reset form values after creating tour
+		// the onsuccess here also gets access to the data returned by mutationFn after mutation
+		// createTour(
+		// 	{ ...data, image: data.image[0] },
+		// 	{
+		// 		onSuccess: data => {
+		// 			console.log(data);
+		// 			reset;
+		// 		},
+		// 	}
+		// );
+
+		// we don't need the created tour data, hence leave it
+		createTour({ ...data, image: data.image[0] }, { onSuccess: reset });
 	}
 
 	return (

@@ -1,8 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import { getTours } from '../../services/apiTours';
 import Spinner from '../../ui/Spinner';
 import TourRow from './TourRow';
+import { useTours } from './useTours';
 
 const Table = styled.div`
 	border: 1px solid var(--color-grey-200);
@@ -29,13 +28,7 @@ const TableHeader = styled.header`
 `;
 
 function TourTable() {
-	const data = useQuery({
-		queryKey: ['tours'],
-		queryFn: getTours,
-	});
-
-	const { isLoading, data: tours, error } = data;
-	// console.log(tours);
+	const { isLoading, tours } = useTours();
 
 	if (isLoading) return <Spinner />;
 

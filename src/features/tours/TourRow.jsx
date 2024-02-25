@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
 import { formatCurrency } from '../../utils/helpers';
-import { deleteTour } from '../../services/apiTours';
 import EditTourForm from './EditTourForm';
+import { useDeleteTour } from './useDeleteTour';
 
 const TableRow = styled.div`
 	display: grid;
@@ -47,27 +45,9 @@ const Discount = styled.div`
 
 function TourRow({ tour }) {
 	const [showEditForm, setShowEditForm] = useState(false);
+	const { isDeleting, deleteTour } = useDeleteTour();
 
 	const { id: tourId, name, image, maxGroupSize, price, discount } = tour;
-
-	const queryClient = useQueryClient();
-
-	const { isLoading: isDeleting, mutate } = useMutation({
-		mutationFn: id => deleteTour(id),
-		// after the mutation has been performed, the tour will be deleted
-		// but the frontend won't update, hence you need to invalidate the tours cache
-		onSuccess: () => {
-			toast.success('Cabin was deleted successfully');
-			// the invalidateQueries is present on the queryClient from which we use react query
-			queryClient.invalidateQueries({
-				queryKey: ['tours'],
-			});
-		},
-		onError: err => {
-			console.log(err);
-			toast.error(err.message);
-		},
-	});
 
 	return (
 		<>
@@ -76,9 +56,13 @@ function TourRow({ tour }) {
 				<Tour>{name}</Tour>
 				<div>Max {maxGroupSize} people on a tour</div>
 				<Price>{formatCurrency(price)} </Price>
-				<Price>{formatCurrency(discount)} </Price>
+				{discount ? (
+					<Discount>{formatCurrency(discount)} </Discount>
+				) : (
+					<span>-</span>
+				)}
 				<button onClick={() => setShowEditForm(s => !s)}>Edit</button>
-				<button onClick={() => mutate(tourId)} disabled={isDeleting}>
+				<button onClick={() => deleteTour(tourId)} disabled={isDeleting}>
 					Delete
 				</button>
 			</TableRow>
