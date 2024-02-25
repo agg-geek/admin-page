@@ -6,6 +6,7 @@ import Modal from '../../ui/Modal';
 import { HiPencil, HiTrash } from 'react-icons/hi2';
 import ConfirmDelete from '../../ui/ConfirmDelete';
 import Table from '../../ui/Table';
+import Menus from '../../ui/Menus';
 
 const Img = styled.img`
 	display: block;
@@ -47,29 +48,35 @@ function TourRow({ tour }) {
 			<Price>{formatCurrency(price)} </Price>
 			{discount ? <Discount>{formatCurrency(discount)} </Discount> : <span>-</span>}
 
-			<Modal>
-				<Modal.Open opens="edit-tour">
-					<button>
-						<HiPencil />
-					</button>
-				</Modal.Open>
-				<Modal.Window name="edit-tour">
-					<EditTourForm tour={tour} />
-				</Modal.Window>
+			<div>
+				<Modal>
+					<Menus.Menu>
+						<Menus.Toggle id={tourId} />
 
-				<Modal.Open opens="delete-tour">
-					<button>
-						<HiTrash />
-					</button>
-				</Modal.Open>
-				<Modal.Window name="delete-tour">
-					<ConfirmDelete
-						resourceName={tour.name}
-						disabled={isDeleting}
-						onConfirm={() => deleteTour(tourId)}
-					/>
-				</Modal.Window>
-			</Modal>
+						<Menus.List id={tourId}>
+							<Modal.Open opens="edit-tour">
+								<Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+							</Modal.Open>
+
+							<Modal.Open opens="delete-tour">
+								<Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+							</Modal.Open>
+						</Menus.List>
+
+						<Modal.Window name="edit-tour">
+							<EditTourForm tour={tour} />
+						</Modal.Window>
+
+						<Modal.Window name="delete-tour">
+							<ConfirmDelete
+								resourceName={tour.name}
+								disabled={isDeleting}
+								onConfirm={() => deleteTour(tourId)}
+							/>
+						</Modal.Window>
+					</Menus.Menu>
+				</Modal>
+			</div>
 		</Table.Row>
 	);
 }
