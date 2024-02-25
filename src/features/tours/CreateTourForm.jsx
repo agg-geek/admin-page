@@ -1,5 +1,4 @@
 import { useForm } from 'react-hook-form';
-import styled from 'styled-components';
 
 import Input from '../../ui/Input';
 import Form from '../../ui/Form';
@@ -9,18 +8,30 @@ import Textarea from '../../ui/Textarea';
 import { useCreateTour } from './useCreateTour';
 import FormRow from '../../ui/FormRow';
 
-function CreateTourForm() {
+function CreateTourForm({ onCloseModal }) {
 	const { register, handleSubmit, reset, getValues, formState } = useForm();
 	const { errors: formErrors } = formState;
 
 	const { isCreating, createTour } = useCreateTour();
 
 	function onFormSubmit(data) {
-		createTour({ ...data, image: data.image[0] }, { onSuccess: reset });
+		createTour(
+			{ ...data, image: data.image[0] },
+			{
+				onSuccess: () => {
+					reset();
+					// call onCloseModal if the form is rendered inside a modal
+					onCloseModal?.();
+				},
+			}
+		);
 	}
 
 	return (
-		<Form onSubmit={handleSubmit(onFormSubmit)}>
+		<Form
+			onSubmit={handleSubmit(onFormSubmit)}
+			type={onCloseModal ? 'modal' : 'regular'}
+		>
 			<FormRow label="Tour name" error={formErrors?.name?.message}>
 				<Input
 					type="text"
@@ -100,7 +111,11 @@ function CreateTourForm() {
 			</FormRow>
 
 			<FormRow>
-				<Button variation="secondary" type="reset">
+				<Button
+					variation="secondary"
+					type="reset"
+					onClick={() => onCloseModal?.()}
+				>
 					Cancel
 				</Button>
 				<Button disabled={isCreating}>Create tour</Button>

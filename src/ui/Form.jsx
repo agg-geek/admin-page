@@ -1,8 +1,10 @@
 import styled, { css } from 'styled-components';
 
 const Form = styled.form`
+	/*  different styling for props.type === 'regular' 
+        and not modal are already given */
 	${props =>
-		props.type !== 'modal' &&
+		props.type == 'regular' &&
 		css`
 			padding: 2.4rem 4rem;
 
@@ -21,5 +23,11 @@ const Form = styled.form`
   overflow: hidden;
 	font-size: 1.4rem;
 `;
+
+// .defaultProps is a React feature to specify default props
+// otherwise you used to do it as Form({ type = 'regular' })
+Form.defaultProps = {
+	type: 'regular',
+};
 
 export default Form;
