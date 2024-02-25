@@ -1,31 +1,7 @@
-import styled from 'styled-components';
 import Spinner from '../../ui/Spinner';
 import TourRow from './TourRow';
 import { useTours } from './useTours';
-
-const Table = styled.div`
-	border: 1px solid var(--color-grey-200);
-
-	font-size: 1.4rem;
-	background-color: var(--color-grey-0);
-	border-radius: 7px;
-	overflow: hidden;
-`;
-
-const TableHeader = styled.header`
-	display: grid;
-	grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
-	column-gap: 2.4rem;
-	align-items: center;
-
-	background-color: var(--color-grey-50);
-	border-bottom: 1px solid var(--color-grey-100);
-	text-transform: uppercase;
-	letter-spacing: 0.4px;
-	font-weight: 600;
-	color: var(--color-grey-600);
-	padding: 1.6rem 2.4rem;
-`;
+import Table from '../../ui/Table';
 
 function TourTable() {
 	const { isLoading, tours } = useTours();
@@ -33,17 +9,21 @@ function TourTable() {
 	if (isLoading) return <Spinner />;
 
 	return (
-		<Table>
-			<TableHeader>
+		// we can customize table by using different column widths
+		<Table columns="0.6fr 1.8fr 2.2fr 1fr 1fr 1fr">
+			<Table.Header>
 				<div>Image</div>
 				<div>Tour</div>
 				<div>Group size</div>
 				<div>Price</div>
 				<div>Discount</div>
-			</TableHeader>
-			{tours.map(tour => (
-				<TourRow tour={tour} key={tour.id} />
-			))}
+			</Table.Header>
+
+			{/* use the render prop pattern to render the tours in table */}
+			<Table.Body
+				data={tours}
+				render={tour => <TourRow tour={tour} key={tour.id} />}
+			/>
 		</Table>
 	);
 }
