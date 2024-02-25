@@ -47,14 +47,17 @@ const Error = styled.span`
 `;
 
 function CreateTourForm() {
-	// notice there are no controlled elements
-	// the form is handled using react-hook-form
-	const { register, handleSubmit, reset } = useForm();
+	const { register, handleSubmit, reset, getValues, formState } = useForm();
+
+	// formState will refer to the current state of the form
+	// we use validation and required properties below for form validation
+	// any errors generated there will be present in this errors object
+	// hence, use this errors obj to display errors
+	const { errors: formErrors } = formState;
 
 	const queryClient = useQueryClient();
 
 	const { mutate, isLoading: isCreating } = useMutation({
-		// mutationFn: (tour) => createTour(tour),
 		mutationFn: createTour,
 		onSuccess: () => {
 			toast.success('Cabin created successfully');
@@ -62,8 +65,6 @@ function CreateTourForm() {
 				queryKey: ['tours'],
 			});
 
-			// reset the form after tour was created
-			// we should also close the form here, to be done later
 			reset();
 		},
 		onError: err => {
@@ -73,8 +74,6 @@ function CreateTourForm() {
 	});
 
 	function onFormSubmit(data) {
-		// data will be the form data with which the form is submitted
-		// console.log(data);
 		mutate(data);
 	}
 
@@ -82,17 +81,51 @@ function CreateTourForm() {
 		<Form onSubmit={handleSubmit(onFormSubmit)}>
 			<FormRow>
 				<Label htmlFor="name">Tour name</Label>
-				<Input type="text" id="name" {...register('name')} />
+				<Input
+					type="text"
+					id="name"
+					{...register('name', {
+						required: 'Name is required',
+					})}
+				/>
+				{/* notice using formErrors.name because show error here for name field */}
+				{formErrors?.name?.message && <Error>{formErrors?.name?.message}</Error>}
 			</FormRow>
 
 			<FormRow>
 				<Label htmlFor="maxGroupSize">Max Group size</Label>
-				<Input type="number" id="maxGroupSize" {...register('maxGroupSize')} />
+				<Input
+					type="number"
+					id="maxGroupSize"
+					{...register('maxGroupSize', {
+						required: 'Group size is required',
+						min: {
+							value: 1,
+							message: 'Group size should be atleast 1',
+						},
+					})}
+				/>
+				{formErrors?.maxGroupSize?.message && (
+					<Error>{formErrors?.maxGroupSize?.message}</Error>
+				)}
 			</FormRow>
 
 			<FormRow>
 				<Label htmlFor="price">Regular price</Label>
-				<Input type="number" id="price" {...register('price')} />
+				<Input
+					type="number"
+					id="price"
+					{...register('price', {
+						required: 'Price is required',
+						min: {
+							value: 1,
+							message: 'Prize should be greater than 0',
+						},
+					})}
+				/>
+				{formErrors?.price?.message && (
+					<Error>{formErrors?.price?.message}</Error>
+				)}
 			</FormRow>
 
 			<FormRow>
@@ -101,18 +134,38 @@ function CreateTourForm() {
 					type="number"
 					id="discount"
 					defaultValue={0}
-					{...register('discount')}
+					{...register('discount', {
+						required: 'Discount is required',
+						min: {
+							value: 1,
+							message: 'Discount should be >= 0',
+						},
+						// custom validation
+						// the string after || is used to specify the message if validation fails
+						// to get the current regular price value, use getValues from useForm
+						validate: disc =>
+							+disc < +getValues().price ||
+							'Discount should be less than regular price',
+					})}
 				/>
+				{formErrors?.discount?.message && (
+					<Error>{formErrors?.discount?.message}</Error>
+				)}
 			</FormRow>
 
 			<FormRow>
-				<Label htmlFor="description">Description for website</Label>
+				<Label htmlFor="description">Tour description</Label>
 				<Textarea
 					type="number"
 					id="description"
 					defaultValue=""
-					{...register('description')}
+					{...register('description', {
+						required: 'Description is required',
+					})}
 				/>
+				{formErrors?.description?.message && (
+					<Error>{formErrors?.description?.message}</Error>
+				)}
 			</FormRow>
 
 			<FormRow>
