@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router-dom';
 import Spinner from '../../ui/Spinner';
 import TourRow from './TourRow';
 import { useTours } from './useTours';
@@ -6,8 +7,18 @@ import Menus from '../../ui/Menus';
 
 function TourTable() {
 	const { isLoading, tours } = useTours();
+	const [searchParams] = useSearchParams();
 
 	if (isLoading) return <Spinner />;
+
+	const filterBy = searchParams.get('filter') || 'all';
+
+	let filteredTours;
+	if (filterBy === 'all') filteredTours = tours;
+	if (filterBy === 'with-discount')
+		filteredTours = tours.filter(tour => tour.discount > 0);
+	if (filterBy === 'no-discount')
+		filteredTours = tours.filter(tour => tour.discount === 0);
 
 	return (
 		<Menus>
@@ -20,9 +31,8 @@ function TourTable() {
 					<div>Discount</div>
 				</Table.Header>
 
-				{/* use the render prop pattern to render the tours in table */}
 				<Table.Body
-					data={tours}
+					data={filteredTours}
 					render={tour => <TourRow tour={tour} key={tour.id} />}
 				/>
 			</Table>
