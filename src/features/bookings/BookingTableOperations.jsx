@@ -1,4 +1,4 @@
-import SortBy from '../../ui/SortBy';
+import Sort from '../../ui/Sort';
 import Filter from '../../ui/Filter';
 import TableOperations from '../../ui/TableOperations';
 
@@ -9,21 +9,18 @@ function BookingTableOperations() {
 				filterField="status"
 				options={[
 					{ value: 'all', label: 'All' },
-					{ value: 'tour-ended', label: 'Tour ended' },
-					{ value: 'tour-started', label: 'Tour started' },
 					{ value: 'paid', label: 'Paid' },
+					{ value: 'tour-started', label: 'Tour started' },
+					{ value: 'tour-ended', label: 'Tour ended' },
 				]}
 			/>
 
-			<SortBy
+			<Sort
 				options={[
-					{ value: 'startDate-desc', label: 'Sort by date (recent first)' },
-					{ value: 'startDate-asc', label: 'Sort by date (earlier first)' },
-					{
-						value: 'totalPrice-desc',
-						label: 'Sort by amount (high first)',
-					},
-					{ value: 'totalPrice-asc', label: 'Sort by amount (low first)' },
+					{ value: 'startDate-desc', label: 'Sort by date (latest first)' },
+					{ value: 'startDate-asc', label: 'Sort by date (oldest first)' },
+					{ value: 'price-desc', label: 'Sort by amount (descending)' },
+					{ value: 'price-asc', label: 'Sort by amount (ascending)' },
 				]}
 			/>
 		</TableOperations>
