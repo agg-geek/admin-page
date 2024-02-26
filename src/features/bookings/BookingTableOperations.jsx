@@ -19,8 +19,8 @@ function BookingTableOperations() {
 				options={[
 					{ value: 'startDate-desc', label: 'Sort by date (latest first)' },
 					{ value: 'startDate-asc', label: 'Sort by date (oldest first)' },
-					{ value: 'price-desc', label: 'Sort by amount (descending)' },
-					{ value: 'price-asc', label: 'Sort by amount (ascending)' },
+					{ value: 'tourPrice-desc', label: 'Sort by amount (descending)' },
+					{ value: 'tourPrice-asc', label: 'Sort by amount (ascending)' },
 				]}
 			/>
 		</TableOperations>

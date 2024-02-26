@@ -6,16 +6,16 @@ export function useBookings() {
 	const [searchParams] = useSearchParams();
 
 	const filterBy = searchParams.get('status');
-	// const filter =
-	// 	!filterBy || filterBy === 'all' ? null : { field: 'status', value: filterBy };
+	const filter =
+		!filterBy || filterBy === 'all' ? null : { field: 'status', value: filterBy };
 
-	// in the apiBookings, we only applied the eq method to find equality
-	// if we want to dynamically apply the method like eq, gte, lt, etc:
-	const filter = { field: 'tourPrice', value: '2000', method: 'gte' };
+	const sortBy = searchParams.get('sort') || 'startDate-desc';
+	const [sortField, sortDirection] = sortBy.split('-');
+	const sort = { field: sortField, direction: sortDirection };
 
 	const { isLoading, data: bookings } = useQuery({
-		queryKey: ['bookings', filter],
-		queryFn: () => getBookingsAPI(filter),
+		queryKey: ['bookings', filter, sort],
+		queryFn: () => getBookingsAPI(filter, sort),
 	});
 
 	return { isLoading, bookings };
