@@ -4,7 +4,14 @@ import TableOperations from '../../ui/TableOperations';
 function TourTableOperations() {
 	return (
 		<TableOperations>
-			<Filter />
+			<Filter
+				filterField={'filter'}
+				options={[
+					{ label: 'All', value: 'all' },
+					{ label: 'With discount', value: 'with-discount' },
+					{ label: 'No discount', value: 'no-discount' },
+				]}
+			/>
 		</TableOperations>
 	);
 }
