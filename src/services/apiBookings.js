@@ -1,16 +1,21 @@
 import { getToday } from '../utils/helpers';
 import supabase from './supabase';
+import { RESULTS_PER_PAGE } from '../utils/constants';
 
-export async function getBookings(filter, sort) {
+export async function getBookings(filter, sort, page) {
 	let query = supabase
 		.from('bookings')
 		.select('*, tours(name), travellers(fullName, email)', {
-			// query the count, ie number of documents in the table
 			count: 'exact',
 		});
 
 	if (filter) query = query.eq(filter.field, filter.value);
 	if (sort) query = query.order(sort.field, { ascending: sort.direction === 'asc' });
+	if (page) {
+		const from = (page - 1) * RESULTS_PER_PAGE;
+		const to = page * RESULTS_PER_PAGE - 1;
+		query = query.range(from, to);
+	}
 
 	const { data, error, count } = await query;
 

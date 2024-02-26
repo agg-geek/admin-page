@@ -13,11 +13,11 @@ export function useBookings() {
 	const [sortField, sortDirection] = sortBy.split('-');
 	const sort = { field: sortField, direction: sortDirection };
 
-	// notice we pass a default {} value to data because then
-	// while destructuring data, data might actually not have loaded
+	const page = +searchParams.get('page') || 1;
+
 	const { isLoading, data: { data: bookings, count } = {} } = useQuery({
-		queryKey: ['bookings', filter, sort],
-		queryFn: () => getBookingsAPI(filter, sort),
+		queryKey: ['bookings', filter, sort, page],
+		queryFn: () => getBookingsAPI(filter, sort, page),
 	});
 
 	return { isLoading, bookings, count };
