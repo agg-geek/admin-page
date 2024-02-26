@@ -34,8 +34,8 @@ const Amount = styled.div`
 	font-weight: 500;
 `;
 
-function BookingRow({
-	booking: {
+function BookingRow({ booking }) {
+	const {
 		id: bookingId,
 		created_at,
 		startDate,
@@ -46,8 +46,8 @@ function BookingRow({
 		status,
 		travellers: { fullName: travellerName, email },
 		tours: { name: tourName },
-	},
-}) {
+	} = booking;
+
 	const statusToTagName = {
 		paid: 'blue',
 		'tour-started': 'green',
@@ -68,7 +68,7 @@ function BookingRow({
 					{isToday(new Date(startDate))
 						? 'Today'
 						: formatDistanceFromNow(startDate)}{' '}
-					&rarr; {numDays} day stay
+					&rarr; {numDays} day tour
 				</span>
 				<span>
 					{format(new Date(startDate), 'MMM dd yyyy')} &mdash;{' '}
