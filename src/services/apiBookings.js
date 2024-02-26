@@ -27,6 +27,7 @@ export async function getBookings(filter, sort, page) {
 	return { data, count };
 }
 
+// getBooking from supabase
 export async function getBooking(id) {
 	const { data, error } = await supabase
 		.from('bookings')

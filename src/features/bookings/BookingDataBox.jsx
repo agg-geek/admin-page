@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { format, isToday } from 'date-fns';
 import {
+	HiGlobeEuropeAfrica,
 	HiOutlineChatBubbleBottomCenterText,
 	HiOutlineCheckCircle,
-	HiOutlineCurrencyDollar,
-	HiOutlineHomeModern,
+	HiOutlineCurrencyRupee,
 } from 'react-icons/hi2';
 
 import DataItem from '../../ui/DataItem';
@@ -13,7 +13,6 @@ import { UserPhoto } from '../../ui/UserPhoto';
 import { formatDistanceFromNow, formatCurrency } from '../../utils/helpers';
 
 const StyledBookingDataBox = styled.section`
-	/* Box */
 	background-color: var(--color-grey-0);
 	border: 1px solid var(--color-grey-100);
 	border-radius: var(--border-radius-md);
@@ -68,7 +67,9 @@ const Traveller = styled.div`
 	}
 `;
 
-const Price = styled.div`
+const Price = styled('div').withConfig({
+	shouldForwardProp: prop => !['isFoodPaid'].includes(prop),
+})`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -81,9 +82,9 @@ const Price = styled.div`
 	color: ${props =>
 		props.isFoodPaid ? 'var(--color-green-700)' : 'var(--color-yellow-700)'};
 
-	& p:last-child {
+	& p {
 		text-transform: uppercase;
-		font-size: 1.4rem;
+		font-size: 2rem;
 		font-weight: 600;
 	}
 
@@ -101,7 +102,6 @@ const Footer = styled.footer`
 	text-align: right;
 `;
 
-// A purely presentational component
 function BookingDataBox({ booking }) {
 	const {
 		created_at,
@@ -110,12 +110,12 @@ function BookingDataBox({ booking }) {
 		numDays,
 		numTravellers,
 		tourPrice,
-		extrasPrice,
+		addedPrice,
 		totalPrice,
 		hasFood,
 		observations,
 		isFoodPaid,
-		travellers: { fullName: travellerName, email, country, userPhoto, nationalID },
+		travellers: { fullName: travellerName, email, country, userPhoto, nationalId },
 		tours: { name: tourName },
 	} = booking;
 
@@ -123,9 +123,9 @@ function BookingDataBox({ booking }) {
 		<StyledBookingDataBox>
 			<Header>
 				<div>
-					<HiOutlineHomeModern />
+					<HiGlobeEuropeAfrica />
 					<p>
-						{numDays} days in Tour <span>{tourName}</span>
+						{tourName}, {numDays} day tour
 					</p>
 				</div>
 
@@ -150,33 +150,44 @@ function BookingDataBox({ booking }) {
 					<span>&bull;</span>
 					<p>{email}</p>
 					<span>&bull;</span>
-					<p>National ID {nationalID}</p>
+					<p>National ID: {nationalId}</p>
 				</Traveller>
 
 				{observations && (
 					<DataItem
 						icon={<HiOutlineChatBubbleBottomCenterText />}
-						label="Observations"
+						label="Notes"
 					>
 						{observations}
 					</DataItem>
 				)}
 
-				<DataItem icon={<HiOutlineCheckCircle />} label="Breakfast included?">
+				<DataItem icon={<HiOutlineCheckCircle />} label="Food booked?">
 					{hasFood ? 'Yes' : 'No'}
 				</DataItem>
 
 				<Price isFoodPaid={isFoodPaid}>
-					<DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
-						{formatCurrency(totalPrice)}
+					<div>
+						<DataItem icon={<HiOutlineCurrencyRupee />} label="Tour price">
+							{formatCurrency(tourPrice)} (Paid)
+						</DataItem>
 
-						{hasFood &&
-							` (${formatCurrency(tourPrice)} tour + ${formatCurrency(
-								extrasPrice
-							)} breakfast)`}
-					</DataItem>
+						{hasFood && (
+							<DataItem
+								icon={<HiOutlineCurrencyRupee />}
+								label="Food price"
+							>
+								{formatCurrency(addedPrice)} (
+								{isFoodPaid ? 'Paid' : 'Unpaid'})
+							</DataItem>
+						)}
+					</div>
 
-					<p>{isFoodPaid ? 'Paid' : 'Will pay at property'}</p>
+					<p>
+						<DataItem icon={<HiOutlineCurrencyRupee />} label={`Total price`}>
+							{formatCurrency(totalPrice)}
+						</DataItem>
+					</p>
 				</Price>
 			</Section>
 
