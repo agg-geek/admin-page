@@ -4,19 +4,22 @@ import supabase from './supabase';
 export async function getBookings(filter, sort) {
 	let query = supabase
 		.from('bookings')
-		.select('*, tours(name), travellers(fullName, email)');
+		.select('*, tours(name), travellers(fullName, email)', {
+			// query the count, ie number of documents in the table
+			count: 'exact',
+		});
 
 	if (filter) query = query.eq(filter.field, filter.value);
 	if (sort) query = query.order(sort.field, { ascending: sort.direction === 'asc' });
 
-	const { data, error } = await query;
+	const { data, error, count } = await query;
 
 	if (error) {
 		console.log(error);
 		throw new Error('Bookings could not loaded');
 	}
 
-	return data;
+	return { data, count };
 }
 
 export async function getBooking(id) {

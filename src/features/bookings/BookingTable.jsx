@@ -6,7 +6,10 @@ import Spinner from '../../ui/Spinner';
 import Pagination from '../../ui/Pagination';
 
 function BookingTable() {
-	const { bookings, isLoading } = useBookings();
+	// since we need to pass the cntResults to Pagination
+	// we can derive it from bookings as bookings.length
+	// but we can instead query is from supabase
+	const { bookings, isLoading, count } = useBookings();
 
 	if (isLoading) return <Spinner />;
 
@@ -28,7 +31,7 @@ function BookingTable() {
 				/>
 
 				<Table.Footer>
-					<Pagination cntResults={11} />
+					<Pagination cntResults={count} />
 				</Table.Footer>
 			</Table>
 		</Menus>
