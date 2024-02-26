@@ -20,6 +20,21 @@ function TourTable() {
 	if (filterBy === 'no-discount')
 		filteredTours = tours.filter(tour => tour.discount === 0);
 
+	const sortBy = searchParams.get('sort') || 'name-asc';
+	const [sortField, sortDirection] = sortBy.split('-');
+
+	let sortedTours;
+	const modifier = sortDirection === 'asc' ? 1 : -1;
+	if (sortField === 'name') {
+		sortedTours = filteredTours
+			.slice()
+			.sort((a, b) => a.name.localeCompare(b.name) * modifier);
+	} else {
+		sortedTours = filteredTours
+			.slice()
+			.sort((a, b) => (a[sortField] - b[sortField]) * modifier);
+	}
+
 	return (
 		<Menus>
 			<Table columns="0.6fr 1.8fr 2.2fr 1fr 1fr 1fr">
@@ -32,7 +47,7 @@ function TourTable() {
 				</Table.Header>
 
 				<Table.Body
-					data={filteredTours}
+					data={sortedTours}
 					render={tour => <TourRow tour={tour} key={tour.id} />}
 				/>
 			</Table>
