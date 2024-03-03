@@ -6,7 +6,8 @@ export function useSignup() {
 	const { mutate: signup, isLoading } = useMutation({
 		mutationFn: signupAPI,
 		onSuccess: () => {
-			toast.success('Please verify your account to confirm account creation!');
+			// confirm email disabled in supabase
+			toast.success('Signed up successfully!');
 		},
 	});
 

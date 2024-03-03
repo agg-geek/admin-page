@@ -20,12 +20,6 @@ function Login() {
 			<Logo />
 			<Heading as="h4">Log in to your account</Heading>
 			<LoginForm />
-
-			{/* authorization has been implemented client side, but also implement it on supabase
-                change the row level policies to allow access to only authenticated users
-                previously, here on the login page, if we just showed the tourtable without logging in,
-                it was visible, and hence solve it by server side auth */}
-			<TourTable />
 		</LoginLayout>
 	);
 }
