@@ -25,7 +25,6 @@ const StyledFormRow = styled.div`
 				: '1px solid var(--color-grey-100)'};
 	}
 
-	/* Special treatment if the row contains buttons, and if it's NOT a vertical row */
 	${props =>
 		props.orientation !== 'vertical' &&
 		css`
@@ -49,8 +48,6 @@ const Error = styled.span`
 function FormRow({ label, error, children }) {
 	return (
 		<StyledFormRow>
-			{/* children will be a single <input>, and to link htmlFor and input's id,
-                use children.props.id */}
 			{label && <Label htmlFor={children.props.id}>{label}</Label>}
 			{children}
 			{error && <Error>{error}</Error>}

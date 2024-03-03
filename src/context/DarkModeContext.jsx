@@ -3,13 +3,7 @@ import { useLocalStorageState } from '../hooks/useLocalStorageState';
 
 const DarkModeContext = createContext();
 
-// since dark mode state is being used by multiple components
-// like for the dark mode button in the header
-// it is also used to change the logo, so we create a context and provide
-// it to the complete app instead of storing the state locally
-
 function DarkModeProvider({ children }) {
-	// useLocalStorageState is our custom hook
 	const [isDarkMode, setIsDarkMode] = useLocalStorageState(
 		window.matchMedia('(prefers-color-scheme: dark)').matches,
 		'isDarkMode'

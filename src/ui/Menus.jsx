@@ -67,11 +67,6 @@ const StyledButton = styled.button`
 	}
 `;
 
-// a reusable context menu is created for each tour action
-// a menu contains edit and delete buttons for a tour
-// since only one such menu can be open throughtout the table,
-// we wrap each menu together to create Menus component
-
 const MenusContext = createContext();
 
 function Menus({ children }) {
@@ -99,8 +94,6 @@ function Toggle({ id }) {
 		});
 
 		openId === '' || openId !== id ? open(id) : close();
-		// console.log('clicked toggle');
-		// console.log(id, openId, openId === '' || openId !== id ? 'open' : 'close');
 	}
 
 	return (

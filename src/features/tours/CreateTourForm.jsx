@@ -20,7 +20,6 @@ function CreateTourForm({ onCloseModal }) {
 			{
 				onSuccess: () => {
 					reset();
-					// call onCloseModal if the form is rendered inside a modal
 					onCloseModal?.();
 				},
 			}

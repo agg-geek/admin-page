@@ -12,7 +12,6 @@ export async function getTours() {
 }
 
 export async function createTour(newTour) {
-	// replace all / with '' because supabase will use / to create new folders
 	const imageName = `${Date.now()}-${newTour.image.name}`.replaceAll('/', '');
 	const imagePath = `https://wmgtcgsvahqwnwxndxwr.supabase.co/storage/v1/object/public/tour-images/${imageName}`;
 

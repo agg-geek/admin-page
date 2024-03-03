@@ -9,13 +9,10 @@ function UpdateSettingsForm() {
 	const { isLoading, settings } = useSettings();
 
 	const { minBookingLength, maxBookingLength, maxTravellersPerBooking, foodPrice } =
-		// ?? {} because while settings is still loading, settings is undefined
 		settings ?? {};
 
 	const { isUpdating, updateSetting } = useUpdateSetting();
 
-	// update settings as soon as a new value is pasted in a setting input field, so use onBlur
-	// name will refer to the <input name=""> to identify updated setting
 	function handleUpdate(evt) {
 		const { value, name: setting } = evt.target;
 		if (!value) return;

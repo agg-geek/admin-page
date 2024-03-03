@@ -24,7 +24,6 @@ const Avatar = styled.img`
 function UserAvatar() {
 	const { user } = useUser();
 
-	// these fields are added by us during signup in apiAuth
 	const { fullName, avatar } = user.user_metadata;
 
 	return (

@@ -14,7 +14,6 @@ const NavList = styled.ul`
 	gap: 0.8rem;
 `;
 
-// Notice styling the NavLink from react-router-dom
 const StyledNavLink = styled(NavLink)`
 	&:link,
 	&:visited {
@@ -29,8 +28,6 @@ const StyledNavLink = styled(NavLink)`
 		transition: all 0.3s;
 	}
 
-	/*  This works because react-router places the active class 
-        on the active NavLink */
 	&:hover,
 	&:active,
 	&.active:link,
@@ -60,7 +57,6 @@ function MainNav() {
 		<nav>
 			<NavList>
 				<li>
-					{/* using the NavLink component for links */}
 					<StyledNavLink to="/dashboard">
 						<HiOutlineHome />
 						<span>Home</span>

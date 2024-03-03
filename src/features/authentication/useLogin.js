@@ -10,10 +10,6 @@ export function useLogin() {
 	const { mutate: login, isLoading } = useMutation({
 		mutationFn: ({ email, password }) => loginAPI({ email, password }),
 		onSuccess: user => {
-			// on login, the session is created in local storage and
-			// useUser is run in protected route for authorization
-			// which fetches the just logged in user again
-			// hence, to prevent this, just store the user in cachce on login
 			queryClient.setQueryData(['user'], user.user);
 			toast.success('Logged in successfully');
 			navigate('/dashboard', { replace: true });

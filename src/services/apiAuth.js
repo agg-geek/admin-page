@@ -44,18 +44,11 @@ export async function logout() {
 }
 
 export async function updateCurrentUser({ fullName, avatar, password }) {
-	// client has separate forms to update user details and password
-	// hence, this fn will be used to update only one thing at a time
-	// either fullName and avatar or password
-
-	// fullName is custom provided and while signup, it needs to be put
-	// in the data object, and the same is done here as well
 	const updateData = {
 		...(fullName && { data: { fullName } }),
 		...(password && { password }),
 	};
 
-	// supabase will automatically update the logged in user using updateUser
 	const { data, error } = await supabase.auth.updateUser(updateData);
 
 	if (error) {
@@ -67,8 +60,6 @@ export async function updateCurrentUser({ fullName, avatar, password }) {
 
 	const fileName = `avatar-${data.user.id}-${Date.now()}`;
 
-	// we use avatar bucket in supabase to store the avatars
-	// user-images bucket is used to store the avatars of travellers
 	const { error: storageError } = await supabase.storage
 		.from('avatars')
 		.upload(fileName, avatar);

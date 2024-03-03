@@ -22,8 +22,6 @@ export function useBookings() {
 		queryFn: () => getBookingsAPI(filter, sort, page),
 	});
 
-	// pre-fetching data, prefetch data for page 6 when curr page is page 5
-	// you could also perform prefetching for previous page
 	const cntPages = Math.ceil(count / RESULTS_PER_PAGE);
 	if (page != cntPages) {
 		queryClient.prefetchQuery({

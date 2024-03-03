@@ -12,8 +12,6 @@ export function useCreateTour() {
 			queryClient.invalidateQueries({
 				queryKey: ['tours'],
 			});
-
-			// reset() now implemented in CreateTourForm
 		},
 		onError: err => {
 			console.log(err);

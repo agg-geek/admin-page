@@ -21,10 +21,6 @@ const StyledConfirmDelete = styled.div`
 `;
 
 function ConfirmDelete({ resourceName, onConfirm, disabled, onCloseModal }) {
-	// this delete tour modal window will automatically close after deleting tour
-	// unlike create or edit tour modals, for which onSuccess: onCloseModal is to be specified
-	// this delete modal closes because the tour row itself gets deleted,
-	// so this modal window inside also gets deleted
 	return (
 		<StyledConfirmDelete>
 			<Heading as="h3">Delete {resourceName}?</Heading>

@@ -14,9 +14,6 @@ const StyledSelect = styled('select').withConfig({
 	box-shadow: var(--shadow-sm);
 `;
 
-// value is currently active option
-// ...props is used to pass all the other props (meant for styling)
-// into the styledselect directly
 function Select({ options, value, onChange, ...props }) {
 	return (
 		<StyledSelect value={value} onChange={onChange} {...props}>
