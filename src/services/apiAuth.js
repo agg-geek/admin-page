@@ -7,8 +7,20 @@ export async function login({ email, password }) {
 		throw new Error(error.message);
 	}
 
-	// supbase sends data containing data.session which is jwt
-	// and data.user which has data.user.role of 'authenticated'
-	// supabase will store the data in local storage
 	return data;
+}
+
+// get user data from supabase on each login
+// this ensures that the updated user gets fetched everytime
+export async function getCurrentUser() {
+	const { data: session } = await supabase.auth.getSession();
+	if (!session.session) return null;
+
+	const { data, error } = await supabase.auth.getUser();
+	if (error) {
+		console.log(error);
+		throw new Error(error.message);
+	}
+
+	return data?.user;
 }
