@@ -43,6 +43,7 @@ function Filter({ filterField, options }) {
 
 	function handleClick(filterBy) {
 		searchParams.set(filterField, filterBy);
+		if (searchParams.get('page')) searchParams.set('page', 1);
 		setSearchParams(searchParams);
 	}
 
