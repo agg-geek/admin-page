@@ -23,7 +23,23 @@ function UpdateUserDataForm() {
 	function handleSubmit(e) {
 		e.preventDefault();
 		if (!fullName && !avatar) return;
-		updateUser({ fullName, avatar });
+		updateUser(
+			{ fullName, avatar },
+			{
+				onSuccess: () => {
+					// setAvatar will clear the state and file but the filename shown beside the input
+					// won't be cleared, hence e.target (which is the form) should be resetted (HTML things)
+					setAvatar(null);
+					e.target.reset();
+				},
+			}
+		);
+	}
+
+	function handleCancel() {
+		// button is of type reset hence no preventDefault reqd
+		setFullName(currentFullName);
+		setAvatar(null);
 	}
 
 	return (
@@ -49,7 +65,7 @@ function UpdateUserDataForm() {
 				/>
 			</FormRow>
 			<FormRow>
-				<Button type="reset" variation="secondary">
+				<Button type="reset" variation="secondary" onClick={handleCancel}>
 					Cancel
 				</Button>
 				<Button disabled={isUpdating}>Update account</Button>
