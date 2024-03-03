@@ -3,6 +3,7 @@ import { useUser } from '../features/authentication/useUser';
 import Spinner from './Spinner';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 const FullPage = styled.div`
 	height: 100vh;
@@ -17,21 +18,15 @@ function ProtectedRoute({ children }) {
 
 	const { isLoading, isAuthenticated } = useUser();
 
-	// navigate to /login if not authenticated
-	// since navigate cannot be used at the top level of the component
-	// and only inside a fn or effect, use useeffect
 	useEffect(
 		function () {
-			// if (!isLoading && !isAuthenticated) navigate('/login');
-			console.log('useeffect, navigate to login');
-
-			if (!isAuthenticated && !isLoading) navigate('/login');
+			if (!isLoading && !isAuthenticated) {
+				toast.error('You need to login first!');
+				navigate('/login');
+			}
 		},
-		// [isLoading, isAuthenticated, navigate]
-		[isAuthenticated, isLoading, navigate]
+		[isLoading, isAuthenticated, navigate]
 	);
-
-	console.log('before isloading');
 
 	if (isLoading)
 		return (
@@ -40,7 +35,6 @@ function ProtectedRoute({ children }) {
 			</FullPage>
 		);
 
-	console.log('before isauth');
 	if (isAuthenticated) return children;
 }
 
