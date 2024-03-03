@@ -27,8 +27,6 @@ function UpdateUserDataForm() {
 			{ fullName, avatar },
 			{
 				onSuccess: () => {
-					// setAvatar will clear the state and file but the filename shown beside the input
-					// won't be cleared, hence e.target (which is the form) should be resetted (HTML things)
 					setAvatar(null);
 					e.target.reset();
 				},
@@ -37,7 +35,6 @@ function UpdateUserDataForm() {
 	}
 
 	function handleCancel() {
-		// button is of type reset hence no preventDefault reqd
 		setFullName(currentFullName);
 		setAvatar(null);
 	}
